@@ -43,9 +43,11 @@ namespace Test
                 Athentication = AthenticationType.WindowsAthentication
             };
             DataBaseEngine.DataBaseInfo = dbinfo;
-            PhoneBook p = new PhoneBook() { ID = 1003, Name = "Muhammad Rizwan", PhoneNumber = "785421", Occupation = "bbb", Description = "dew", Active = 1 };
-            PhoneBook p2 = new PhoneBook() { ID = 1003, Name = "Rizwan", PhoneNumber = "789456123", Occupation = "bbb", Description = "dew", Active = 0 };
-            DataBaseEngine.Update(p,p2, (x) => x.ID == p2.ID);           
+            // PhoneBook p = new PhoneBook() { ID = 1003, Name = "Muhammad Rizwan", PhoneNumber = "785421", Occupation = "bbb", Description = "dew", Active = 1 };
+            // PhoneBook p2 = new PhoneBook() { ID = 1003, Name = "Rizwan", PhoneNumber = "789456123", Occupation = "bbb", Description = "dew", Active = 0 };
+            // DataBaseEngine.Insert(p);
+            // DataBaseEngine.Update(p,p2, (x) => x.ID == p2.ID);
+            // DataBaseEngine.Delete(new PhoneBook(), (x) => x.ID == 1003);
 
             Console.Read();
         }

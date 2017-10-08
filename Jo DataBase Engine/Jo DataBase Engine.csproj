@@ -40,14 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AthenticationType.cs" />
-    <Compile Include="AutoIncrementAttribute.cs" />
-    <Compile Include="ClassToColumnInfo.cs" />
+    <Compile Include="DbInfo\Column\ColumnInfo.cs" />
+    <Compile Include="DbInfo\AthenticationType.cs" />
+    <Compile Include="DbInfo\Column\Attribute\AutoIncrementAttribute.cs" />
+    <Compile Include="Parsers\ClassToColumnInfo.cs" />
     <Compile Include="DataBaseEngine.cs" />
-    <Compile Include="DataBaseInfo.cs" />
-    <Compile Include="DbColumnAttribute.cs" />
-    <Compile Include="ExpressionSolver.cs" />
-    <Compile Include="PrimaryKeyAttribute.cs" />
+    <Compile Include="DbInfo\DataBaseInfo.cs" />
+    <Compile Include="DbInfo\Column\Attribute\DbColumnAttribute.cs" />
+    <Compile Include="Parsers\ExpressionSolver.cs" />
+    <Compile Include="DbInfo\Column\Attribute\PrimaryKeyAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

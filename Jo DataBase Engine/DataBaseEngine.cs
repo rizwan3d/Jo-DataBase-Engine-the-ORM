@@ -10,18 +10,6 @@ using System.Linq.Expressions;
 
 namespace JoDataBaseEngine
 {
-    public class ColumnInfo
-    {
-        string _ColumnName;
-        object _ColumnValue;
-        bool _AutoIncrement;
-        bool _PrimaryKey;
-
-        public string ColumnName { get => _ColumnName; set => _ColumnName = value; }
-        public object ColumnValue { get => _ColumnValue; set => _ColumnValue = value; }
-        public bool AutoIncrement { get => _AutoIncrement; set => _AutoIncrement = value; }
-        public bool PrimaryKey { get => _PrimaryKey; set => _PrimaryKey = value; }
-    }
     public static class DataBaseEngine
     {
         static DataBaseInfo _DataBaseInfo;
@@ -121,11 +109,38 @@ namespace JoDataBaseEngine
 
         }
 
-        static bool Delete<T>(T Object, string Condition)
+        public static bool Delete<T>(T Object, Expression<Func<T, bool>> Condition)
         {
-            throw new NotImplementedException();
+            bool toReturn = false;
+      
+            string TableName = Object.GetType().Name;
+            
+            string commandText = $"DELETE FROM {TableName} ";
+
+            commandText += " WHERE " + ExpressionSolver.LambdaToString(Condition);
+
+            using (SqlConnection connection = new SqlConnection(_DataBaseInfo.ConnectionString))
+            {
+
+                SqlCommand command = new SqlCommand(commandText, connection);
+             
+                try
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    toReturn = true;
+
+                }
+                catch { }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return toReturn;
+
         }
-        
+
         public static bool Insert<T>(T Object)
         {
             bool toReturn = false;
@@ -207,6 +222,16 @@ namespace JoDataBaseEngine
         {
             throw new NotImplementedException();
         }
+
+        //static bool CreateTable<T>(T Table)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //static bool DeleteTable<T>(T Table)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         static void ToCVS()
         {
