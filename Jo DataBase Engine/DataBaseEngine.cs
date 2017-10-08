@@ -6,9 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace JoDataBaseEngine
 {
+    public class ColumnInfo
+    {
+        string _ColumnName;
+        object _ColumnValue;
+        bool _AutoIncrement;
+        bool _PrimaryKey;
+
+        public string ColumnName { get => _ColumnName; set => _ColumnName = value; }
+        public object ColumnValue { get => _ColumnValue; set => _ColumnValue = value; }
+        public bool AutoIncrement { get => _AutoIncrement; set => _AutoIncrement = value; }
+        public bool PrimaryKey { get => _PrimaryKey; set => _PrimaryKey = value; }
+    }
     public static class DataBaseEngine
     {
         static DataBaseInfo _DataBaseInfo;
@@ -35,41 +48,84 @@ namespace JoDataBaseEngine
             throw new NotImplementedException();
         }
 
-        static bool Update<T>(T What, T With, string Condition)
+        public static bool Update<T>(T What, T With, Expression<Func<T, bool>> Condition)
         {
-            throw new NotImplementedException();
+            bool toReturn = false;
+
+            string TableName = What.GetType().Name;
+            if(!What.GetType().Name.Equals(With.GetType().Name))
+            {
+                Console.Write("Invaled Classes");
+                return false;
+            }
+            string commandText = $"UPDATE {TableName} SET ";
+
+            List<ColumnInfo> WhatColumnInfo = ClassToColumnInfo.ColumnInfoFromType(What);
+            List<ColumnInfo> WithColumnInfo = ClassToColumnInfo.ColumnInfoFromType(With);
+
+            int i = 0;
+            WhatColumnInfo.ForEach(Column =>
+            {
+                if (!Column.AutoIncrement && !Column.PrimaryKey)
+                {
+                    commandText += ($"{Column.ColumnName} = @abc{i},");
+                    i++;
+                }
+            });
+
+            commandText = commandText.Substring(0, commandText.Length - 1);
+
+            commandText += " WHERE " + ExpressionSolver.LambdaToString(Condition);
+
+            using (SqlConnection connection = new SqlConnection(_DataBaseInfo.ConnectionString))
+            {
+
+                SqlCommand command = new SqlCommand(commandText, connection);
+                int j = 0;
+                WithColumnInfo.ForEach(Column =>
+                {
+                    if (!Column.AutoIncrement)
+                    {
+                        if (Column.ColumnValue is int)
+                        {
+                            command.Parameters.Add($"@abc{j}", SqlDbType.Int);
+                            command.Parameters[$"@abc{j}"].Value = (int)Column.ColumnValue;
+                        }
+                        else if (Column.ColumnValue is string)
+                        {
+                            command.Parameters.Add($"@abc{j}", SqlDbType.NChar);
+                            command.Parameters[$"@abc{j}"].Value = Column.ColumnValue as string;
+                        }
+                        else if (Column.ColumnValue is float)
+                        {
+                            command.Parameters.Add($"@abc{j}", SqlDbType.Float);
+                            command.Parameters[$"@abc{j}"].Value = (float)Column.ColumnValue;
+                        }
+                        j++;
+                    }
+                });
+                try
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    toReturn = true;
+
+                }
+                catch { }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return toReturn;
+
         }
 
         static bool Delete<T>(T Object, string Condition)
         {
             throw new NotImplementedException();
         }
-
-        private static List<Tuple<string, object, string,bool>> DictionaryFromType(object atype)
-        {
-            if (atype == null) return null;
-            Type t = atype.GetType();
-            PropertyInfo[] props = t.GetProperties();
-            List<Tuple<string, object, string, bool>> dict = new List<Tuple<string, object, string, bool>>();
-            foreach (PropertyInfo prp in props)
-            {
-                string name = prp.Name;
-                object value = prp.GetValue(atype, new object[] { });
-                var attributes = prp.GetCustomAttributes(false);
-                var columnMapping = attributes.FirstOrDefault(a => a.GetType() == typeof(DbColumnAttribute));
-                DbColumnAttribute mapsto = columnMapping as DbColumnAttribute;
-                string Column = mapsto.Name;
-                var AutoincrumentAttrib = attributes.Where(a => a.GetType() == typeof(AutoIncrementAttribute));
-                var Autoincrument = AutoincrumentAttrib.FirstOrDefault(a => a.GetType() == typeof(AutoIncrementAttribute));
-                AutoIncrementAttribute ai = Autoincrument as AutoIncrementAttribute;
-                if(ai is null)
-                    dict.Add(new Tuple<string, object, string, bool>(prp.Name, value, Column,false));
-                else
-                    dict.Add(new Tuple<string, object, string, bool>(prp.Name, value, Column,ai.Value));
-            }
-            return dict;
-        }
-
+        
         public static bool Insert<T>(T Object)
         {
             bool toReturn = false;
@@ -77,56 +133,55 @@ namespace JoDataBaseEngine
             string TableName = Object.GetType().Name;
             string commandText = $"INSERT INTO {TableName}(";
 
-            List<Tuple<string, object, string, bool>> a = DictionaryFromType(Object);
+            List<ColumnInfo> _ColumnInfo = ClassToColumnInfo.ColumnInfoFromType(Object);
 
-            foreach (Tuple<string, object, string, bool> entry in a)
-            {
-                if(!entry.Item4)
-                    commandText += ($"{entry.Item3},");
-            }
+            _ColumnInfo.ForEach(Column =>
+           {
+               if (!Column.AutoIncrement)
+                   commandText += ($"{Column.ColumnName},");
+           });
 
             commandText = commandText.Substring(0, commandText.Length - 1);
             commandText += (")VALUES(");
             int i = 0;
-            foreach (Tuple<string, object, string, bool> entry in a)
+            _ColumnInfo.ForEach(Column =>
             {
-                if (!entry.Item4)
+                if (!Column.AutoIncrement)
                 {
                     commandText += $"@abc{i},";
                     i++;
                 }
-            }
-                
+            });
+
             commandText = commandText.Substring(0, commandText.Length - 1);
             commandText += (")");
-            Console.WriteLine(commandText);
             using (SqlConnection connection = new SqlConnection(_DataBaseInfo.ConnectionString))
             {
                 
                 SqlCommand command = new SqlCommand(commandText, connection);
                 int j = 0;
-                foreach (Tuple<string, object, string, bool> entry in a)
+                _ColumnInfo.ForEach(Column =>
                 {
-                    if (!entry.Item4)
+                    if (!Column.AutoIncrement)
                     {
-                        if (entry.Item2 is int)
+                        if (Column.ColumnValue is int)
                         {
                             command.Parameters.Add($"@abc{j}", SqlDbType.Int);
-                            command.Parameters[$"@abc{j}"].Value = (int)entry.Item2;
+                            command.Parameters[$"@abc{j}"].Value = (int)Column.ColumnValue;
                         }
-                        else if (entry.Item2 is string)
+                        else if (Column.ColumnValue is string)
                         {
                             command.Parameters.Add($"@abc{j}", SqlDbType.NChar);
-                            command.Parameters[$"@abc{j}"].Value = entry.Item2 as string;
+                            command.Parameters[$"@abc{j}"].Value = Column.ColumnValue as string;
                         }
-                        else if (entry.Item2 is float)
+                        else if (Column.ColumnValue is float)
                         {
                             command.Parameters.Add($"@abc{j}", SqlDbType.Float);
-                            command.Parameters[$"@abc{j}"].Value = (float)entry.Item2;
+                            command.Parameters[$"@abc{j}"].Value = (float)Column.ColumnValue;
                         }
                         j++;
                     }
-                }
+                });
                 try
                 {
                     connection.Open();

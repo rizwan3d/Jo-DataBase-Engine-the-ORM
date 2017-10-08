@@ -42,9 +42,12 @@
   <ItemGroup>
     <Compile Include="AthenticationType.cs" />
     <Compile Include="AutoIncrementAttribute.cs" />
+    <Compile Include="ClassToColumnInfo.cs" />
     <Compile Include="DataBaseEngine.cs" />
     <Compile Include="DataBaseInfo.cs" />
     <Compile Include="DbColumnAttribute.cs" />
+    <Compile Include="ExpressionSolver.cs" />
+    <Compile Include="PrimaryKeyAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
