@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jo DataBase Engine", "Jo DataBase Engine\Jo DataBase Engine.csproj", "{F6DEBB48-CF63-41FD-B6C1-90094DB76BB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{30E5A269-E33B-40BD-9DC9-23D83B317ED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F6DEBB48-CF63-41FD-B6C1-90094DB76BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6DEBB48-CF63-41FD-B6C1-90094DB76BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6DEBB48-CF63-41FD-B6C1-90094DB76BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E5A269-E33B-40BD-9DC9-23D83B317ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30E5A269-E33B-40BD-9DC9-23D83B317ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30E5A269-E33B-40BD-9DC9-23D83B317ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30E5A269-E33B-40BD-9DC9-23D83B317ED0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
