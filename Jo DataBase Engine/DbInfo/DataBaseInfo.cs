@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JoDataBaseEngine
 {
@@ -27,7 +23,7 @@ namespace JoDataBaseEngine
             if (_Athentication == AthenticationType.SQLSererAthentication)
                 return $"Server={_ServerName};Database={_DataBase};User Id={_UserName};Password={_Password};";
             else
-                return $"Server={_ServerName};Database={_DataBase};Trusted_Connection=True;";
+                return $"Server={_ServerName};Database={_DataBase};Integrated Security=True;";
 
             throw new Exception("Invalid Athentication");
         }

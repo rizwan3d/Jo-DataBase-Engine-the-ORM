@@ -40,15 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbInfo\Column\Attribute\AllowNullAttribute.cs" />
+    <Compile Include="DbInfo\Column\Attribute\DataTypeAttribute.cs" />
     <Compile Include="DbInfo\Column\ColumnInfo.cs" />
     <Compile Include="DbInfo\AthenticationType.cs" />
     <Compile Include="DbInfo\Column\Attribute\AutoIncrementAttribute.cs" />
+    <Compile Include="DbInfo\Table\AllowNullAttribute.cs" />
     <Compile Include="Parsers\ClassToColumnInfo.cs" />
     <Compile Include="DataBaseEngine.cs" />
     <Compile Include="DbInfo\DataBaseInfo.cs" />
     <Compile Include="DbInfo\Column\Attribute\DbColumnAttribute.cs" />
     <Compile Include="Parsers\ExpressionSolver.cs" />
     <Compile Include="DbInfo\Column\Attribute\PrimaryKeyAttribute.cs" />
+    <Compile Include="Parsers\IDataReaderToList.cs" />
+    <Compile Include="Parsers\TableNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JoDataBaseEngine
 {
@@ -27,6 +25,10 @@ namespace JoDataBaseEngine
                 body = body.Replace("AndAlso", "AND");
                 body = body.Replace("OrElse", "OR");
                 body = body.Replace("==", "=");
+                body = body.Replace("= True", "= 1");
+                body = body.Replace("=True", "= 1");
+                body = body.Replace("True", "1 = 1");
+                body = body.Replace("False", "1 != 1");
             }
 
             foreach (var replacement in replacements)
